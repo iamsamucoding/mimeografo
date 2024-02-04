@@ -13,8 +13,11 @@ def main():
     if 'container_count' not in st.session_state:
         st.session_state.container_count = 1
     
-    if 'data' not in st.session_state:
-        st.session_state.data = []
+    if 'data_preview' not in st.session_state:
+        st.session_state.data_preview = []
+
+    if 'charts' not in st.session_state:
+        st.session_state.charts = []
     
     add_button = st.button('Add new analysis')
     delete_button = st.button('Delete last analysis')
