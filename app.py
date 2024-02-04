@@ -6,20 +6,15 @@ import mimeografo.interface as ui
 
 def main():
     # print('Connecting to the database...')
-    # conn = connect_to_db('../orders.db')
-
-    # query = """
-    # SELECT * FROM Orders LIMIT 10
-    # """
-
-    # print('Executing query...')
-    # df = pd.read_sql_query(query, conn)
-    # print(df.head())
+    conn = connect_to_db('./orders.db')
 
     st.sidebar.title("SQL Dashboard")
 
     if 'container_count' not in st.session_state:
         st.session_state.container_count = 1
+    
+    if 'data' not in st.session_state:
+        st.session_state.data = []
     
     add_button = st.button('Add new analysis')
     delete_button = st.button('Delete last analysis')
@@ -32,9 +27,9 @@ def main():
             st.session_state.container_count = 0
     
     for i in range(st.session_state.container_count):
-        ui.create_slide_container(i)
+        ui.create_slide_container(i, conn)
     
-    
+    conn.close()
 
 
     
