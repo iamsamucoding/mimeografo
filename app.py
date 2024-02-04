@@ -10,6 +10,12 @@ def main():
 
     st.sidebar.title("SQL Dashboard")
 
+    col1, col2 = st.columns([6, 1])
+    with col1:
+        st.header("Mimeografo")
+    with col2:
+        st.image("./img/mimeograph.jpeg", use_column_width=True)
+
     if 'container_count' not in st.session_state:
         st.session_state.container_count = 1
     
@@ -40,7 +46,7 @@ def main():
 
 
 if __name__ == '__main__':
-    st.set_page_config(layout="wide")
+    st.set_page_config(layout="wide", page_title="Mimeografo")
     
 
     print('Running the app...')
