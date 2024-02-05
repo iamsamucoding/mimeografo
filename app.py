@@ -49,6 +49,8 @@ def main():
     for i in range(st.session_state.container_count):
         ui.create_slide_container(i, conn)
     
+    st.markdown("[Back to Top](#mimeografo)")
+
     conn.close()
 
 
