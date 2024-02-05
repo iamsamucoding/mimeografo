@@ -1,6 +1,5 @@
 import streamlit as st
 from streamlit_ace import st_ace
-from pptx import Presentation
 
 import mimeografo.datahandler as dathand
 import mimeografo.dataviz as viz
@@ -8,6 +7,10 @@ import mimeografo.dataviz as viz
 
 def create_slide_container(container_number: int = 0, conn = None):
     container = st.container(border=True)
+
+    if container_number >= len(st.session_state.data_preview):
+        st.session_state.data_preview.append(None)
+        st.session_state.charts.append(None)
 
     # Add a text area for SQL code with SQL syntax highlighting and line numbers
     with container:
@@ -72,31 +75,27 @@ def create_slide_container(container_number: int = 0, conn = None):
         with col5:
             st.markdown("**Data Preview**")
             data_preview = st.empty()
-            if container_number < len(st.session_state.data_preview):
+            if st.session_state.data_preview[container_number] is not None:
                 data_preview.write(st.session_state.data_preview[container_number])
         with col6:
             st.markdown("**Chart Preview**")
             chart = st.empty()
-            if container_number < len(st.session_state.charts):
+            if st.session_state.charts[container_number] is not None:
                 chart.pyplot(st.session_state.charts[container_number],
                                    use_container_width=True)
 
         if st.button("Preview",
                      key=f"generate_slide_{container_number}") \
            and conn and sql_code:
-            prs = Presentation('./assets/pptx/template.pptx')
             
             df = dathand.query_db(sql_code, conn)
             fig = viz.plot_data(df, plot, x_var, y_var, hue_var, chart_kargs)
 
-            if container_number < len(st.session_state.charts):
-                st.session_state.data_preview[container_number] = df.head(10)
-                st.session_state.charts[container_number] = fig
-            else:
-                st.session_state.data_preview.append(df.head(10))
-                st.session_state.charts.append(fig)
+            st.session_state.data_preview[container_number] = df.head(10)
+            st.session_state.charts[container_number] = fig
+
             data_preview.write(st.session_state.data_preview[container_number])
             chart.pyplot(st.session_state.charts[container_number],
                          use_container_width=True)
-            prs = viz.make_slide(prs, template_slide, title, subtitle, fig)
-            prs.save("test.pptx")
+            # prs = viz.make_slide(prs, template_slide, title, subtitle, fig)
+            # prs.save("test.pptx")
