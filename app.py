@@ -14,7 +14,7 @@ def main():
     with col1:
         st.header("Mimeografo")
     with col2:
-        st.image("./img/mimeograph.jpeg", use_column_width=True)
+        st.image("./assets/img/mimeograph.jpeg", use_column_width=True)
 
     if 'container_count' not in st.session_state:
         st.session_state.container_count = 1

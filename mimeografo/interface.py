@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_ace import st_ace
+from pptx import Presentation
 
 import mimeografo.datahandler as dathand
 import mimeografo.dataviz as viz
@@ -30,13 +31,13 @@ def create_slide_container(container_number: int = 0, conn = None):
 
         with col1:
             template_slide_options = ["Template 1", "Template 2"]
-            plot = st.selectbox("Choose a template:",
-                                template_slide_options,
-                                key=f"template_{container_number}")
-            slide_title = st.text_input("Slide Title",
-                                        key=f"slide_title_{container_number}")
-            sub_title = st.text_input("Slide Sub-Title",
-                                        key=f"sub_title_{container_number}")
+            template_slide = st.selectbox("Choose a template:",
+                                          template_slide_options,
+                                          key=f"template_{container_number}")
+            title = st.text_input("Slide Title",
+                                  key=f"title_{container_number}")
+            subtitle = st.text_input("Slide Sub-Title",
+                                     key=f"subtitle_{container_number}")
 
         with col2:
             st.image("https://www.slideegg.com/image/catalog/85346-Google%20Slide%20Template%20Free%20Simple.png")
@@ -83,6 +84,8 @@ def create_slide_container(container_number: int = 0, conn = None):
         if st.button("Preview",
                      key=f"generate_slide_{container_number}") \
            and conn and sql_code:
+            prs = Presentation('./assets/pptx/template.pptx')
+            
             df = dathand.query_db(sql_code, conn)
             fig = viz.plot_data(df, plot, x_var, y_var, hue_var, chart_kargs)
 
@@ -94,4 +97,6 @@ def create_slide_container(container_number: int = 0, conn = None):
                 st.session_state.charts.append(fig)
             data_preview.write(st.session_state.data_preview[container_number])
             chart.pyplot(st.session_state.charts[container_number],
-                               use_container_width=True)
+                         use_container_width=True)
+            prs = viz.make_slide(prs, template_slide, title, subtitle, fig)
+            prs.save("test.pptx")
