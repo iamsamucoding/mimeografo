@@ -14,6 +14,8 @@ def main():
         st.session_state.data_preview = []
     if 'charts' not in st.session_state:
         st.session_state.charts = []
+    if 'previous_session_state' not in st.session_state:
+        st.session_state.previous_session_state = {}
 
     conn = connect_to_db('./orders.db')
 
@@ -32,21 +34,20 @@ def main():
 
     if add_button:
         st.session_state.container_count += 1
-        st.session_state.data_preview.append(None)
-        st.session_state.charts.append(None)
-        print(st.session_state.container_count)
-        print(len(st.session_state.data_preview))
-        print(len(st.session_state.charts))
 
     if delete_button:
-        st.session_state.container_count -= 1
-        if st.session_state.container_count < 0:
-            st.session_state.container_count = 0
-        
-        if len(st.session_state.data_preview) > 0:
+        last_cont_idx = st.session_state.container_count - 1
+
+        if st.session_state.container_count > 0:
+            print(f"----> DELETING: Container {last_cont_idx}")
+            st.session_state.container_count -= 1
             st.session_state.data_preview.pop()
-        if len(st.session_state.charts) > 0:
             st.session_state.charts.pop()
+            keys_to_delete = [key for key in \
+                              st.session_state.previous_session_state.keys() \
+                                if key.startswith(f'container_{last_cont_idx}')]
+            for key in keys_to_delete:
+                del st.session_state.previous_session_state[key]
     
     for i in range(st.session_state.container_count):
         ui.create_slide_container(i, conn)
