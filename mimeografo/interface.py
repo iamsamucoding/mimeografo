@@ -12,7 +12,6 @@ def create_slide_container(container_number: int = 0, conn = None):
         st.session_state.data_preview.append(None)
         st.session_state.charts.append(None)
 
-    # Add a text area for SQL code with SQL syntax highlighting and line numbers
     with container:
         st.subheader(f"Slide Analysis: #{container_number + 1}")
         
@@ -43,7 +42,8 @@ def create_slide_container(container_number: int = 0, conn = None):
                                      key=f"subtitle_{container_number}")
 
         with col2:
-            st.image("https://www.slideegg.com/image/catalog/85346-Google%20Slide%20Template%20Free%20Simple.png")
+            st.image("./assets/img/template_1_thumbnail.png",
+                     use_column_width=True)
         
         col3, col4 = st.columns([2, 1])
 
@@ -76,7 +76,8 @@ def create_slide_container(container_number: int = 0, conn = None):
             st.markdown("**Data Preview**")
             data_preview = st.empty()
             if st.session_state.data_preview[container_number] is not None:
-                data_preview.write(st.session_state.data_preview[container_number])
+                data_preview.write(
+                    st.session_state.data_preview[container_number])
         with col6:
             st.markdown("**Chart Preview**")
             chart = st.empty()
