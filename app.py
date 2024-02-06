@@ -1,8 +1,16 @@
 import streamlit as st
 from pptx import Presentation
+import json
 
 from mimeografo.dbconnection import connect_to_db
 import mimeografo.interface as ui
+
+def get_settings():
+    keys = [key for key in st.session_state.keys() \
+            if key.startswith('container_')]
+    print({key: st.session_state[key] for key in keys})
+    return {key: st.session_state[key] for key in keys}
+
 
 def main():
     if "presentation" not in st.session_state:
@@ -19,7 +27,8 @@ def main():
 
     conn = connect_to_db('./orders.db')
 
-    st.sidebar.title("SQL Dashboard")
+    st.sidebar.title("Settings")
+    st.sidebar.download_button = st.empty()
 
     col1, col2 = st.columns([6, 1])
     with col1:
@@ -53,6 +62,13 @@ def main():
         ui.create_slide_container(i, conn)
     
     st.markdown("[Back to Top](#mimeografo)")
+
+    with st.sidebar:
+        st.download_button(
+            label="Download Settings",
+            data=json.dumps(get_settings(), indent=4),
+            file_name='settings.json',
+            mime='application/json')
 
     conn.close()
 
