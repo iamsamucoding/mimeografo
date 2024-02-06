@@ -145,13 +145,13 @@ def create_slide_container(container_number: int = 0, conn=None):
             df = dathand.query_db(sql_code, conn)
             fig = viz.plot_data(df, plot, x_var, y_var, hue_var, chart_kargs)
 
+            data_preview.write(df)
+            chart.pyplot(fig, use_container_width=True)
+            # prs = viz.make_slide(prs, template_slide, title, subtitle, fig)
+            # prs.save("test.pptx")
+
+            # just update the previous session state at the end to guarantee
+            # that no excepetion were raised before
             st.session_state.data_preview[container_number] = df.head(10)
             st.session_state.charts[container_number] = fig
             update_container_state(container_number)
-
-            data_preview.write(st.session_state.data_preview[container_number])
-            chart.pyplot(
-                st.session_state.charts[container_number], use_container_width=True
-            )
-            # prs = viz.make_slide(prs, template_slide, title, subtitle, fig)
-            # prs.save("test.pptx")

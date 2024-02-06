@@ -8,7 +8,6 @@ import mimeografo.interface as ui
 def get_settings():
     keys = [key for key in st.session_state.keys() \
             if key.startswith('container_')]
-    print({key: st.session_state[key] for key in keys})
     return {key: st.session_state[key] for key in keys}
 
 
