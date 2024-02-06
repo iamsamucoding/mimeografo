@@ -27,6 +27,8 @@ def main():
 
     add_button = st.button('Add new analysis')
     delete_button = st.button('Delete last analysis')
+    trigger_button = st.button('Generate Slides')
+    st.session_state.trigger_button = trigger_button
 
     if add_button:
         st.session_state.container_count += 1
