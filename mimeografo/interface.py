@@ -45,19 +45,26 @@ def update_container_state(container_number: int = 0):
     st.session_state.previous_session_state.update(container_session_state)
 
 def create_slide_container(container_number: int = 0, conn=None):
-    container = st.container(border=True)
+    sql_first_render_value = ""
 
     if container_number >= len(st.session_state.data_preview):
+        print("****************")
         st.session_state.data_preview.append(None)
         st.session_state.charts.append(None)
         st.session_state.previous_session_state.update(
             empty_container_state(container_number)
         )
+        if f"container_{container_number}__sql_code" in st.session_state:
+            sql_first_render_value = st.session_state[f"container_{container_number}__sql_code"]
+            print(f"SQL Value: {sql_first_render_value}")
+    
+    container = st.container(border=True)
 
     with container:
         st.subheader(f"Slide Analysis: #{container_number + 1}")
 
         st.markdown("**SQL Code**")
+
         sql_code = st_ace(
             language="sql",
             theme="github",
@@ -66,6 +73,7 @@ def create_slide_container(container_number: int = 0, conn=None):
             placeholder="Write your SQL code here...",
             auto_update=True,
             key=f"container_{container_number}__sql_code",
+            value=sql_first_render_value
         )
 
         st.markdown("**Plot Settings**")
