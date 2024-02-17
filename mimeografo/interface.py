@@ -45,19 +45,23 @@ def update_container_state(container_number: int = 0):
     st.session_state.previous_session_state.update(container_session_state)
 
 def create_slide_container(container_number: int = 0, conn=None):
-    sql_first_render_value = ""
-
     if container_number >= len(st.session_state.data_preview):
         st.session_state.data_preview.append(None)
         st.session_state.charts.append(None)
         st.session_state.previous_session_state.update(
             empty_container_state(container_number)
         )
-        if f"container_{container_number}__sql_code" in st.session_state:
-            sql_first_render_value = st.session_state[f"container_{container_number}__sql_code"]
-            print(f"SQL Value: {sql_first_render_value}")
     
     container = st.container(border=True)
+
+    if st.session_state['loaded_settings'] != None:
+        title_val = st.session_state['loaded_settings'].get(f"container_{container_number}__title", '')
+        sql_code_val = st.session_state['loaded_settings'].get(f"container_{container_number}__sql_code", '')
+        print(f"Title: {title_val}")
+        print()
+    else:
+        title_val = ""
+        sql_code_val = ""
 
     with container:
         st.subheader(f"Slide Analysis: #{container_number + 1}")
@@ -71,7 +75,8 @@ def create_slide_container(container_number: int = 0, conn=None):
             show_gutter=True,  # Show line numbers
             placeholder="Write your SQL code here...",
             auto_update=True,
-            key=f"container_{container_number}__sql_code"
+            key=f"container_{container_number}__sql_code",
+            value=sql_code_val 
         )
 
         st.markdown("**Plot Settings**")
@@ -87,7 +92,8 @@ def create_slide_container(container_number: int = 0, conn=None):
                 key=f"container_{container_number}__template",
             )
             title = st.text_input(
-                "Slide Title", key=f"container_{container_number}__title"
+                "Slide Title", key=f"container_{container_number}__title",
+                value=title_val
             )
             subtitle = st.text_input(
                 "Slide Sub-Title", key=f"container_{container_number}__subtitle"
