@@ -25,7 +25,7 @@ def plot_data(df, plot, x_var, y_var, hue_var, chart_kargs):
             sns_kargs = chart_kargs_dict["sns"]
             plot_args.update(sns_kargs)
 
-    fig, ax = plt.subplots(figsize=(10, 2))
+    fig, ax = plt.subplots(figsize=(10, 4))
     if plot == "Bar Plot":
         sns.barplot(data=df, ax=ax, **plot_args)
     elif plot == "Line Plot":
@@ -33,7 +33,7 @@ def plot_data(df, plot, x_var, y_var, hue_var, chart_kargs):
     elif plot == "Scatter Plot":
         sns.scatterplot(data=df, ax=ax, **plot_args)
     ax.set(**plt_kargs)
-    # ax.grid(plt_kargs.get("grid", False))
+    ax.grid(plt_kargs.get("grid", False))
     
     return fig
 

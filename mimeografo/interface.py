@@ -48,7 +48,6 @@ def create_slide_container(container_number: int = 0, conn=None):
     sql_first_render_value = ""
 
     if container_number >= len(st.session_state.data_preview):
-        print("****************")
         st.session_state.data_preview.append(None)
         st.session_state.charts.append(None)
         st.session_state.previous_session_state.update(
@@ -72,8 +71,7 @@ def create_slide_container(container_number: int = 0, conn=None):
             show_gutter=True,  # Show line numbers
             placeholder="Write your SQL code here...",
             auto_update=True,
-            key=f"container_{container_number}__sql_code",
-            value=sql_first_render_value
+            key=f"container_{container_number}__sql_code"
         )
 
         st.markdown("**Plot Settings**")
@@ -155,6 +153,8 @@ def create_slide_container(container_number: int = 0, conn=None):
 
             data_preview.write(df)
             chart.pyplot(fig, use_container_width=True)
+
+            # prs = pptx.Presentation('./assets/pptx/template.pptx')
             # prs = viz.make_slide(prs, template_slide, title, subtitle, fig)
             # prs.save("test.pptx")
 

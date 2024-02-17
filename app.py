@@ -29,26 +29,26 @@ def main():
     st.sidebar.title("Settings")
     st.sidebar.download_button = st.empty()
 
-    with st.sidebar:
-        st.session_state.uploaded_file = st.file_uploader("Load Settings",
-                                                          type="json",
-                                                          key="settings_file")
-        if st.session_state.uploaded_file is not None:
-            container_keys = [key for key in st.session_state.keys()
-                              if key.startswith('container_')]
-            for key in container_keys:
-                del st.session_state[key]
+    # with st.sidebar:
+    #     st.session_state.uploaded_file = st.file_uploader("Load Settings",
+    #                                                       type="json",
+    #                                                       key="settings_file")
+    #     if st.session_state.uploaded_file is not None:
+    #         container_keys = [key for key in st.session_state.keys()
+    #                           if key.startswith('container_')]
+    #         for key in container_keys:
+    #             del st.session_state[key]
 
-            st.session_state.update(json.load(st.session_state.uploaded_file))
+    #         st.session_state.update(json.load(st.session_state.uploaded_file))
             
-            n_containers = st.session_state.container_count
-            st.session_state.data_preview = [None] * n_containers
-            st.session_state.charts = [None] * n_containers
-            st.session_state.previous_session_state = {}
-            for container_number in range(n_containers):
-                st.session_state.previous_session_state.update(
-                    ui.empty_container_state(container_number)
-                )
+    #         n_containers = st.session_state.container_count
+    #         st.session_state.data_preview = [None] * n_containers
+    #         st.session_state.charts = [None] * n_containers
+    #         st.session_state.previous_session_state = {}
+    #         for container_number in range(n_containers):
+    #             st.session_state.previous_session_state.update(
+    #                 ui.empty_container_state(container_number)
+    #             )
 
     col1, col2 = st.columns([6, 1])
     with col1:
