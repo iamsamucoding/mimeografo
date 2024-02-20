@@ -17,7 +17,7 @@ def plot_data(df, plot, x_var, y_var, hue_var, chart_kargs):
     chart_kargs_dict = {}
     plt_kargs = {}
     sns_kargs = {}
-    if chart_kargs:
+    if chart_kargs and chart_kargs != "":
         chart_kargs_dict = json.loads(chart_kargs)
         if "plt" in chart_kargs_dict:
             plt_kargs = chart_kargs_dict["plt"]
