@@ -100,7 +100,8 @@ def main():
     with st.sidebar:
         st.download_button(
             label="Download Settings",
-            data=json.dumps(get_settings(), indent=4, ensure_ascii=False),
+            data=json.dumps(get_settings(), indent=4, ensure_ascii=False,
+                            sort_keys=True),
             file_name='settings.json',
             mime='application/json')
 
