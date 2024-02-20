@@ -23,32 +23,36 @@ def main():
         st.session_state.charts = []
     if 'previous_session_state' not in st.session_state:
         st.session_state.previous_session_state = {}
+    if 'loaded_settings' not in st.session_state:
+        st.session_state.loaded_settings = None
 
     conn = connect_to_db('./orders.db')
 
     st.sidebar.title("Settings")
     st.sidebar.download_button = st.empty()
 
-    # with st.sidebar:
-    #     st.session_state.uploaded_file = st.file_uploader("Load Settings",
-    #                                                       type="json",
-    #                                                       key="settings_file")
-    #     if st.session_state.uploaded_file is not None:
-    #         container_keys = [key for key in st.session_state.keys()
-    #                           if key.startswith('container_')]
-    #         for key in container_keys:
-    #             del st.session_state[key]
+    with st.sidebar:
+        # https://discuss.streamlit.io/t/are-there-any-ways-to-clear-file-uploader-values-without-using-streamlit-form/40903
+        # Trick to clear the file_uploader, otherwise it will always be update
+        # the session_station
+        if "file_uploader_key" not in st.session_state:
+            st.session_state["file_uploader_key"] = 0
 
-    #         st.session_state.update(json.load(st.session_state.uploaded_file))
+        uploaded_file = st.file_uploader("Load Settings",
+                                         type="json",
+                                         key=st.session_state["file_uploader_key"])
+        if uploaded_file is not None:
+            container_keys = [key for key in st.session_state.keys()
+                              if key.startswith('container_')]
+            for key in container_keys:
+                del st.session_state[key]
+
+            st.session_state.update(json.load(uploaded_file))
             
-    #         n_containers = st.session_state.container_count
-    #         st.session_state.data_preview = [None] * n_containers
-    #         st.session_state.charts = [None] * n_containers
-    #         st.session_state.previous_session_state = {}
-    #         for container_number in range(n_containers):
-    #             st.session_state.previous_session_state.update(
-    #                 ui.empty_container_state(container_number)
-    #             )
+            # Trick to clear the file_uploader, otherwise it will always be update
+            # the session_station
+            st.session_state["file_uploader_key"] += 1
+            st.rerun()
 
     col1, col2 = st.columns([6, 1])
     with col1:
@@ -92,15 +96,19 @@ def main():
         ui.create_slide_container(i, conn)
     
     st.markdown("[Back to Top](#mimeografo)")
-    print(st.session_state)
 
     with st.sidebar:
         st.download_button(
             label="Download Settings",
-            data=json.dumps(get_settings(), indent=4),
+            data=json.dumps(get_settings(), indent=4, ensure_ascii=False),
             file_name='settings.json',
             mime='application/json')
 
+    st.session_state['loaded_settings'] = None
+
+    sorted_keys = sorted(st.session_state.keys())
+    for key in sorted_keys:
+        print(f"{key} = {st.session_state[key]}")
     conn.close()
 
 

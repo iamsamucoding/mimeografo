@@ -44,39 +44,39 @@ def update_container_state(container_number: int = 0):
 
     st.session_state.previous_session_state.update(container_session_state)
 
-def create_slide_container(container_number: int = 0, conn=None):
+
+def initialize_container_values(container_number: int = 0):
     if container_number >= len(st.session_state.data_preview):
         st.session_state.data_preview.append(None)
         st.session_state.charts.append(None)
         st.session_state.previous_session_state.update(
             empty_container_state(container_number)
         )
-    
-    container = st.container(border=True)
 
-    if st.session_state['loaded_settings'] != None:
-        title_val = st.session_state['loaded_settings'].get(f"container_{container_number}__title", '')
-        sql_code_val = st.session_state['loaded_settings'].get(f"container_{container_number}__sql_code", '')
-        print(f"Title: {title_val}")
-        print()
-    else:
-        title_val = ""
-        sql_code_val = ""
+def create_slide_container(container_number: int = 0, conn=None):
+    initialize_container_values(container_number)
+
+    container = st.container(border=True)
 
     with container:
         st.subheader(f"Slide Analysis: #{container_number + 1}")
 
         st.markdown("**SQL Code**")
 
+        # Streaminlit-Ace is not intelligent enough to handle the
+        # session_state and values automatically, so we need to
+        # manually handle it
+        key = f"container_{container_number}__sql_code"
+        val = st.session_state[key] if key in st.session_state else ""
         sql_code = st_ace(
+            key=key,
             language="sql",
             theme="github",
             height=200,
             show_gutter=True,  # Show line numbers
             placeholder="Write your SQL code here...",
             auto_update=True,
-            key=f"container_{container_number}__sql_code",
-            value=sql_code_val 
+            value=val,
         )
 
         st.markdown("**Plot Settings**")
@@ -91,12 +91,15 @@ def create_slide_container(container_number: int = 0, conn=None):
                 template_slide_options,
                 key=f"container_{container_number}__template",
             )
+
+            key = f"container_{container_number}__title"
             title = st.text_input(
                 "Slide Title", key=f"container_{container_number}__title",
-                value=title_val
             )
+
+            key = f"container_{container_number}__subtitle"
             subtitle = st.text_input(
-                "Slide Sub-Title", key=f"container_{container_number}__subtitle"
+                "Slide Sub-Title", key=key,
             )
 
         with col2:
@@ -107,30 +110,34 @@ def create_slide_container(container_number: int = 0, conn=None):
 
         with col3:
             options = ["Bar Plot", "Line Plot", "Scatter Plot"]
+            key = f"container_{container_number}__plot"
             plot = st.selectbox(
                 "Choose a plot:",
                 options,
-                key=f"container_{container_number}__plot",
+                key=key,
             )
 
             col31, col32, col33 = st.columns(3)
             with col31:
+                key = f"container_{container_number}__x_var_"
                 x_var = st.text_input(
-                    "X-axis Variable", key=f"container_{container_number}__x_var_"
+                    "X-axis Variable", key=key,
                 )
             with col32:
+                key = f"container_{container_number}__y_var"
                 y_var = st.text_input(
-                    "Y-axis Variable", key=f"container_{container_number}__y_var"
+                    "Y-axis Variable", key=key,
                 )
             with col33:
+                key = f"container_{container_number}__hue_var"
                 hue_var = st.text_input(
-                    "Hue Variable", key=f"container_{container_number}__hue_var"
+                    "Hue Variable", key=key,
                 )
 
         with col4:
+            key = f"container_{container_number}__chart_kargs"
             chart_kargs = st.text_area(
                 label="Chart kargs",
-                value='{\n    "plt": {},\n    "sns": {}\n}',
                 height=200,
                 key=f"container_{container_number}__chart_kargs",
             )
