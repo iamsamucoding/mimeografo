@@ -72,13 +72,6 @@ def main():
         last_cont_idx = st.session_state.container_count - 1
 
         if st.session_state.container_count > 0:
-            print(f"----> DELETING: Container {last_cont_idx}")
-            print(f"{st.session_state.container_count}")
-            print(
-                f"len(st.session_state.data_preview = {len(st.session_state.data_preview)}")
-            print(
-                f"len(st.session_state.charts) = {len(st.session_state.charts)}")
-            print(f"st.session_state.previous_session_state\n{st.session_state.previous_session_state}\n")
             st.session_state.container_count -= 1
             st.session_state.data_preview.pop()
             st.session_state.charts.pop()
@@ -87,7 +80,6 @@ def main():
                                 if key.startswith(f'container_{last_cont_idx}')]
             for key in keys_to_delete:
                 del st.session_state.previous_session_state[key]
-            print(f"\nNOVO = {st.session_state.container_count}\n")
 
             st.session_state.uploaded_file = None
 
