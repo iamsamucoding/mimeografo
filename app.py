@@ -97,8 +97,6 @@ def main():
             file_name='settings.json',
             mime='application/json')
 
-    st.session_state['loaded_settings'] = None
-
     sorted_keys = sorted(st.session_state.keys())
     for key in sorted_keys:
         print(f"{key} = {st.session_state[key]}")
