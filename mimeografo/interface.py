@@ -156,11 +156,10 @@ def create_slide_container(container_number: int = 0, conn=None):
                     st.session_state.charts[container_number], use_container_width=True
                 )
 
-        if (
-            st.button("Preview", key=f"generate_slide_{container_number}")
-            or st.session_state.trigger_button
-        ) and conn and sql_code and has_container_state_changed(container_number):
-            print("#######################################")
+        if (st.button("Preview", key=f"generate_slide_{container_number}") or \
+           st.session_state.trigger_button) and (conn and \
+           sql_code and sql_code != "" and sql_code.upper() != "NONE" and \
+           has_container_state_changed(container_number)):
             df = dathand.query_db(sql_code, conn)
             fig = viz.plot_data(df, plot, x_var, y_var, hue_var, chart_kargs)
 
